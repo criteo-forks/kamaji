@@ -78,6 +78,7 @@ func (d Deployment) Build(ctx context.Context, deployment *appsv1.Deployment, te
 	d.setAdditionalVolumes(&deployment.Spec.Template.Spec, tenantControlPlane)
 	d.setVolumes(&deployment.Spec.Template.Spec, tenantControlPlane)
 	d.setServiceAccount(&deployment.Spec.Template.Spec, tenantControlPlane)
+	d.setHostNetworking(&deployment.Spec.Template.Spec)
 	d.Client.Scheme().Default(deployment)
 }
 
@@ -686,7 +687,7 @@ func (d Deployment) buildKubeAPIServerCommand(tenantControlPlane kamajiv1alpha1.
 	desiredArgs := map[string]string{
 		"--allow-privileged":                   "true",
 		"--authorization-mode":                 "Node,RBAC",
-		"--advertise-address":                  address,
+		"--advertise-address":                  "$(CRITEO_INSTANCE_IP)",
 		"--client-ca-file":                     path.Join(v1beta3.DefaultCertificatesDir, constants.CACertName),
 		"--enable-admission-plugins":           strings.Join(tenantControlPlane.Spec.Kubernetes.AdmissionControllers.ToSlice(), ","),
 		"--enable-bootstrap-token-auth":        "true",
@@ -1081,4 +1082,9 @@ func (d Deployment) setServiceAccount(spec *corev1.PodSpec, tcp kamajiv1alpha1.T
 	}
 
 	spec.ServiceAccountName = "default"
+}
+
+func (d Deployment) setHostNetworking(spec *corev1.PodSpec) {
+	spec.DNSPolicy = corev1.DNSClusterFirstWithHostNet
+	spec.HostNetwork = true
 }
