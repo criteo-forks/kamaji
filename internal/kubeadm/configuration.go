@@ -55,7 +55,8 @@ func CreateKubeadmInitConfiguration(params Parameters) (*Configuration, error) {
 		ServiceSubnet: params.TenantControlPlaneServiceCIDR,
 	}
 	conf.KubernetesVersion = params.TenantControlPlaneVersion
-	conf.ControlPlaneEndpoint = params.TenantControlPlaneEndpoint
+	// conf.ControlPlaneEndpoint = params.TenantControlPlaneEndpoint
+	conf.ControlPlaneEndpoint = "tenant00-tenant-00.service.fr4.consul.preprod.crto.in"
 	conf.APIServer.CertSANs = append([]string{
 		"127.0.0.1",
 		"localhost",

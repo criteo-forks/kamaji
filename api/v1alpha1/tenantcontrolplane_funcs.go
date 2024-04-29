@@ -34,6 +34,8 @@ func (in *TenantControlPlane) AssignedControlPlaneAddress() (string, int32, erro
 		return "", 0, errors.Wrap(err, "cannot convert Tenant Control Plane port from endpoint")
 	}
 
+	// address = fmt.Sprintf("%s.service.fr4.consul.preprod.crto.in", in.Name)
+
 	return address, int32(port), nil
 }
 
