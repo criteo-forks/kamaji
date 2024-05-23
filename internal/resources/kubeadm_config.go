@@ -90,12 +90,17 @@ func (r *KubeadmConfigResource) mutate(ctx context.Context, tenantControlPlane *
 
 		r.resource.SetLabels(utilities.KamajiLabels(tenantControlPlane.GetName(), r.GetName()))
 
+		controlPlaneEndpoint := tenantControlPlane.ObjectMeta.Annotations["crto.in/consul-endpoint"]
+		if controlPlaneEndpoint == "" {
+			controlPlaneEndpoint = r.getControlPlaneEndpoint(tenantControlPlane.Spec.ControlPlane.Ingress, address, port)
+		}
+
 		params := kubeadm.Parameters{
 			TenantControlPlaneAddress:     address,
 			TenantControlPlanePort:        port,
 			TenantControlPlaneName:        tenantControlPlane.GetName(),
 			TenantControlPlaneNamespace:   tenantControlPlane.GetNamespace(),
-			TenantControlPlaneEndpoint:    r.getControlPlaneEndpoint(tenantControlPlane.Spec.ControlPlane.Ingress, address, port),
+			TenantControlPlaneEndpoint:    controlPlaneEndpoint,
 			TenantControlPlaneCertSANs:    tenantControlPlane.Spec.NetworkProfile.CertSANs,
 			TenantControlPlanePodCIDR:     tenantControlPlane.Spec.NetworkProfile.PodCIDR,
 			TenantControlPlaneServiceCIDR: tenantControlPlane.Spec.NetworkProfile.ServiceCIDR,

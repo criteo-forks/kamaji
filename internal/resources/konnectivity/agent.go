@@ -102,7 +102,7 @@ func (r *Agent) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.T
 	return func() error {
 		logger := log.FromContext(ctx, "resource", r.GetName())
 
-		_, _, err := tenantControlPlane.AssignedControlPlaneAddress()
+		address, _, err := tenantControlPlane.AssignedControlPlaneAddress()
 		if err != nil {
 			logger.Error(err, "unable to retrieve the Tenant Control Plane address")
 
@@ -168,7 +168,8 @@ func (r *Agent) mutate(ctx context.Context, tenantControlPlane *kamajiv1alpha1.T
 		args["-v"] = "8"
 		args["--logtostderr"] = "true"
 		args["--ca-cert"] = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
-		args["--proxy-server-host"] = "tenant00-tenant-00.service.fr4.consul.preprod.crto.in"
+		// args["--proxy-server-host"] = "tenant00-tenant-00.service.fr4.consul.preprod.crto.in"
+		args["--proxy-server-host"] = address
 		args["--proxy-server-port"] = fmt.Sprintf("%d", tenantControlPlane.Spec.Addons.Konnectivity.KonnectivityServerSpec.Port)
 		args["--admin-server-port"] = "8133"
 		args["--health-server-port"] = "8134"

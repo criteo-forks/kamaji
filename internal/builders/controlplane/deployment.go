@@ -687,7 +687,8 @@ func (d Deployment) buildKubeAPIServerCommand(tenantControlPlane kamajiv1alpha1.
 	desiredArgs := map[string]string{
 		"--allow-privileged":                   "true",
 		"--authorization-mode":                 "Node,RBAC",
-		"--advertise-address":                  "$(CRITEO_INSTANCE_IP)",
+		// "--advertise-address":                  "$(CRITEO_INSTANCE_IP)",
+		"--advertise-address":                  address,
 		"--client-ca-file":                     path.Join(v1beta3.DefaultCertificatesDir, constants.CACertName),
 		"--enable-admission-plugins":           strings.Join(tenantControlPlane.Spec.Kubernetes.AdmissionControllers.ToSlice(), ","),
 		"--enable-bootstrap-token-auth":        "true",
