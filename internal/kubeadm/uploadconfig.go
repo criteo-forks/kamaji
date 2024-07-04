@@ -123,6 +123,7 @@ func getKubeletConfigmapContent(kubeletConfiguration KubeletConfiguration) ([]by
 		StreamingConnectionIdleTimeout:   zeroDuration,
 		SyncFrequency:                    zeroDuration,
 		VolumeStatsAggPeriod:             zeroDuration,
+		ServerTLSBootstrap:               true,
 	}
 
 	return utilities.EncodeToYaml(&kc)
